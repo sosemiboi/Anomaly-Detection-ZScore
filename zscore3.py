@@ -45,10 +45,10 @@ def stream_psd_with_zbins(filename, dtype, sample_rate,
             psd = (np.abs(fft_array) ** 2) / (U * sample_rate)
             psd_db = 10 * np.log10(psd + 1e-12)
 
-            # ✅ Exclude DC offset
+            # Exclude DC offset
             psd_db[dc_bin] = np.nan  
 
-            # ✅ Adaptive noise floor (median of current block, ignoring NaN)
+            # Adaptive noise floor (median of current block, ignoring NaN)
             noise_floor_est = np.nanmedian(psd_db)
             psd_db = np.maximum(psd_db, noise_floor_est - 3)
 
@@ -71,7 +71,7 @@ def stream_psd_with_zbins(filename, dtype, sample_rate,
 
                 block_score = np.percentile(np.abs(z_scores[~np.isnan(z_scores)]), 95)
 
-            # ✅ Percentage of anomalous bins in this block
+            # Percentage of anomalous bins in this block
             anomaly_percent = 100 * np.sum(anomalies) / anomalies.size
 
             zscore_trace.append(block_score)
@@ -90,7 +90,7 @@ def stream_psd_with_zbins(filename, dtype, sample_rate,
             ax_psd.grid(True)
             ax_psd.legend(loc="upper right")
 
-            # ✅ Show anomaly percentage
+            # Show anomaly percentage
             ax_psd.text(0.02, 0.95, f"Anomaly %: {anomaly_percent:.2f}%",
                         transform=ax_psd.transAxes, fontsize=10,
                         verticalalignment="top", bbox=dict(facecolor="white", alpha=0.7, edgecolor="none"))
@@ -127,3 +127,4 @@ filename = r"C:\Users\saich\OneDrive\Desktop\noaa15-2.raw"
 dtype = np.int8   # HackRF default
 sample_rate = 2e6
 stream_psd_with_zbins(filename, dtype, sample_rate)
+
